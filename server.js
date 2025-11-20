@@ -23,10 +23,10 @@ const connectToDatabase = async () => {
     }
 };
 
-// multer setup
+// Multer setup
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads'); // store uploaded files
+        cb(null, path.join(__dirname, 'uploads')); 
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Register API
+// Signup API
 app.post('/signup', upload.single("idCard"), async (req, res) => {
     try {
         const existingUser = await User.findOne({ email: req.body.email });
@@ -87,7 +87,12 @@ app.post("/login", async (req, res) => {
     }
 });
 
-// IMPORTANT: Render uses process.env.PORT
+// Default route (avoid Cannot GET /)
+app.get("/", (req, res) => {
+    res.send("Student App Backend Running Successfully 🚀");
+});
+
+// Render uses dynamic port
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
